@@ -14,6 +14,11 @@ const bookingSchema = new Schema({
         type: String,
         required: true
     },
+    // ADDED: Price field included
+    price: {
+        type: String, 
+        required: true
+    },
     bookingDate: {
         type: Date,
         default: Date.now

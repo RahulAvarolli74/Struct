@@ -2,17 +2,20 @@ import { Booking } from "../models/booking.model.js";
 
 const bookService = async (req, res) => {
     try {
-        const { customerName, packageName, vehicleType } = req.body;
+        // CHANGED: Added 'price' to the input destructuring
+        const { customerName, packageName, vehicleType, price } = req.body;
 
-        // --- CRITICAL FIX: Improved Validation ---
-        if ([customerName, packageName, vehicleType].some((field) => !field || field.trim() === "")) {
+        // Basic validation
+        if ([customerName, packageName, vehicleType, price].some((field) => !field || field.trim() === "")) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
+        // Create the booking record in MongoDB
         const createdBooking = await Booking.create({
             customerName,
             packageName,
-            vehicleType
+            vehicleType,
+            price // Saving the price
         });
 
         const checkBooking = await Booking.findById(createdBooking._id);
@@ -22,9 +25,9 @@ const bookService = async (req, res) => {
         }
 
         return res.status(201).json({
-            status: 200,
-            data: checkBooking,
-            message: "Service Booked Successfully"
+            message: "Service Booked Successfully",
+            status: checkBooking.status,
+            data: checkBooking
         });
 
     } catch (error) {

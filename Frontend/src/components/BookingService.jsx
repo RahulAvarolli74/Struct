@@ -50,7 +50,7 @@ function BookingService() {
     }, 100);
   };
 
-  const handleBookService = async (e) => {
+const handleBookService = async (e) => {
     e.preventDefault();
     setBookingStatus({ type: 'loading', msg: 'Processing your booking...' });
 
@@ -58,14 +58,15 @@ function BookingService() {
       const payload = {
         customerName: bookingForm.customerName,
         packageName: selectedPackage.packageName,
-        vehicleType: bookingForm.vehicleType
+        vehicleType: bookingForm.vehicleType,
+        price: selectedPackage.price // CHANGED: Sending price to backend
       };
 
-      const response = await axios.post('http://localhost:8000/api/v1/bookings/book', payload);
+      // Ensure this URL matches your backend route (/bookService)
+      const response = await axios.post('http://localhost:8000/api/v1/bookings/bookService', payload);
 
       if (response.status === 201 || response.status === 200) {
         setBookingStatus({ type: 'success', msg: 'Booking Confirmed Successfully!' });
-        // Reset form after 2 seconds
         setTimeout(() => {
             setSelectedPackage(null);
             setBookingForm({ customerName: '', vehicleType: '' });
@@ -79,7 +80,6 @@ function BookingService() {
       });
     }
   };
-
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       {/* Navbar */}
