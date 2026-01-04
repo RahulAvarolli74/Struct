@@ -4,8 +4,8 @@ const bookService = async (req, res) => {
     try {
         const { customerName, packageName, vehicleType } = req.body;
 
-        // Validation
-        if ([customerName, packageName, vehicleType].some((field) => field?.trim() === "")) {
+        // --- CRITICAL FIX: Improved Validation ---
+        if ([customerName, packageName, vehicleType].some((field) => !field || field.trim() === "")) {
             return res.status(400).json({ message: "All fields are required" });
         }
 

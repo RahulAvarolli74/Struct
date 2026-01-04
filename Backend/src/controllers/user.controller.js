@@ -1,15 +1,13 @@
 import { User } from "../models/user.model.js";
-import { asyncHandler } from "../utils/asyncHandler.js"; // Wrapper we created earlier
-import { ApiError } from "../utils/ApiError.js";         // Error handler we created earlier
-import { Apires} from "../utils/Apires.js";   // Response handler we created earlier
+import { asyncHandler } from "../utils/asyncHandler.js"; 
+import { ApiError } from "../utils/ApiError.js";         
+import { Apires} from "../utils/Apires.js";   
 
-// --- 1. REGISTER (To create a user first) ---
 const registerUser = asyncHandler(async (req, res) => {
     const { username, email, password } = req.body;
 
-    // Basic Validation
-    if ([username, email, password].some((field) => field?.trim() === "")) {
-        throw new ApiError(400, "All fields are required");
+    if ([username, email, password].some((field) => !field || field.trim() === "")) {
+        throw new ApiError(400, "All fields (username, email, password) are required");
     }
 
     // Check if user already exists
@@ -21,7 +19,7 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(409, "User with email or username already exists");
     }
 
-    // Create User (Plain text password as requested)
+    // Create User
     const user = await User.create({
         username,
         email,
@@ -39,12 +37,13 @@ const registerUser = asyncHandler(async (req, res) => {
     );
 });
 
-// --- 2. LOGIN (The logic you asked for) ---
+// --- 2. LOGIN ---
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
-    if (!email) {
-        throw new ApiError(400, "Email is required");
+    // [FIXED] Basic validation for Login
+    if (!email || !password) {
+        throw new ApiError(400, "Email and password are required");
     }
 
     // Find user by email
@@ -54,12 +53,11 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User does not exist");
     }
 
-    // --- DIRECT STRING COMPARISON ---
+    // Verify Password
     if (user.password !== password) {
-        throw new ApiError(401, "Invalid user credentials"); // Wrong Password
+        throw new ApiError(401, "Invalid user credentials");
     }
 
-    // If we reach here, password matches!
     const loggedInUser = await User.findById(user._id).select("-password");
 
     return res
@@ -69,7 +67,6 @@ const loginUser = asyncHandler(async (req, res) => {
                 200, 
                 {
                     user: loggedInUser,
-                    // Frontend checks this flag to navigate
                     redirectTo: "/booking-service" 
                 }, 
                 "User logged In Successfully"
