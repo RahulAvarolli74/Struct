@@ -97,7 +97,7 @@ function BookingService() {
       {/* Navbar */}
       <nav className="relative z-10 bg-[#1a1a1a]/80 backdrop-blur-xl border-b border-white/5 p-4 flex justify-between items-center sticky top-0">
         <div className="flex items-center gap-2">
-          <Sparkles size={24} className="text-indigo-500" />
+          {/* <Sparkles size={24} className="text-indigo-500" /> */}
           <h1 className="text-2xl font-bold tracking-tight">
             AutoCare<span className="text-indigo-500">Pro</span>
           </h1>
