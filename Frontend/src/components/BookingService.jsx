@@ -61,8 +61,6 @@ const handleBookService = async (e) => {
         vehicleType: bookingForm.vehicleType,
         price: selectedPackage.price // CHANGED: Sending price to backend
       };
-
-      // Ensure this URL matches your backend route (/bookService)
       const response = await axios.post('http://localhost:8000/api/v1/bookings/bookService', payload);
 
       if (response.status === 201 || response.status === 200) {
